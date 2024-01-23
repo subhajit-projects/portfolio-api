@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block branding %}
+
+    <h1 id="head">
+        Portfolio API Admin
+    </h1>
+
+{% endblock %}
+
+{% block extrastyle %}
+
+{% endblock %}
+
+{% block footer %}
+<script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#id_blog_content' ), {})
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+{% endblock %}
+
+
+<!-- https://www.youtube.com/watch?v=n83tYkXRJho -->
+<!-- https://www.youtube.com/watch?v=nIMYRqwFpVM -->
+<!-- https://www.youtube.com/watch?v=g5DTIiFAiSk -->
+
+<!-- https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html -->
