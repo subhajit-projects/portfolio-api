@@ -29,9 +29,9 @@ class experience_api(APIView):
             get_all_data = experience.objects.all()
             return_object = {
                 "status": "success",
-                "data": experienceSerializer(get_all_data, many=True).data
+                "resp": "New experience added"
             }
-            return Response(data=return_object, status=200)
+            return Response(data=return_object, status=201)
         
         except ValueError:
             print("Error ")
