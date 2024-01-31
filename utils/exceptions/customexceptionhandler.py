@@ -10,8 +10,6 @@ def custom_exception_handler(exc, context):
         'RequiredfieldException': _handle_required_field_error_exception
     }
 
-    print("8***************")
-
     response = exception_handler(exc, context)
 
     exception_class = exc.__class__.__name__
@@ -41,7 +39,6 @@ def _handle_error_exception(exc, context, response):
         'message': 'Error'
     }
     response['status'] = 503
-    print (exc)
     return response
 
 def _handle_value_error_exception(exc, context, response):
@@ -50,14 +47,11 @@ def _handle_value_error_exception(exc, context, response):
         'message': ''
     }
     response['status'] = 503
-    print (exc)
     # print (exc['designation'])
     return response
 
 def _handle_required_field_error_exception(exc, context, response):
     response = response if response is not None else {}
-    print ("EXC: ", str(exc))
-    print ("response: ", str(response))
     response['message'] = {
         'message': str(exc.message),
         'field_name': exc.field_name

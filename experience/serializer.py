@@ -4,9 +4,6 @@ from rest_framework import serializers
 from utils.exceptions.requiredfieldexception import RequiredfieldException
 from .models import experience
 
-from datetime import date, datetime
-
-# class experienceSerializer(serializers.ModelSerializer):
 class experienceSerializer(serializers.ModelSerializer):
     # start_date = serializers.SerializerMethodField('get_work_start') # To change field name
 
@@ -17,8 +14,8 @@ class experienceSerializer(serializers.ModelSerializer):
         extra_kwargs = {
                 "designation": {"error_messages": {"required": "designation required"}},
                 "company_name": {"error_messages": {"required": "company name required"}},
-                "work_start": {"error_messages": {"required": "work start required", 'blank': "work start sould not blank"}},
-                "work_end": {"error_messages": {"required": "work end required"}},
+                "work_start": {"error_messages": {"required": "work start required", 'blank': "work start sould not blank", "invalid": "invalid date format. Please send YYYY-MM-DD"}},
+                "work_end": {"error_messages": {"required": "work end required", "invalid": "invalid date format. Please send YYYY-MM-DD"}},
                 "what_to_do": {"error_messages": {"required": "what to do required"}},
             }
 
