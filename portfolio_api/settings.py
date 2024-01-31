@@ -116,6 +116,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# REST Framework Setup
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utils.exceptions.customexceptionhandler.custom_exception_handler'
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
