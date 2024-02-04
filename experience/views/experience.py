@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import date, datetime
+
+from utils.globalresponse import globalresponse
 from .. models import *
 from .. serializer import *
 from rest_framework import serializers
@@ -22,15 +24,19 @@ class experience_api(APIView):
     def post(self, request):
         request_data = experienceSerializer(data=request.data)
         return_object = {}
-        print (request_data.is_valid())
+        # print (request_data.is_valid())
 
         # if request_data.is_valid(raise_exception=True):
         if request_data.is_valid(raise_exception=False):
             # print (datetime.strptime(request_data.data.get('work_end', None), "%Y-%m-%d")) #%d-%m-%Y"
-            return_object = {
-                "status": "success",
-                "resp": "new experience added"
+            # return_object = {
+            #     "status": "success",
+            #     "resp": "new experience added"
+            # }
+            data = {
+                "message": "new experience added"
             }
+            return_object = globalresponse(data=data, is_success=True, status_code=201).response_data()
         else:
             default_errors = request_data.errors
             field_names = []
@@ -41,4 +47,4 @@ class experience_api(APIView):
                 field_names.append(field_name)
                 raise RequiredfieldException(str(field_errors[0]), field_name)
 
-        return Response(data=return_object, status=201)
+        return Response(data=return_object, status=return_object.get("status_code"))
