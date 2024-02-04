@@ -1,6 +1,7 @@
 from rest_framework.views import exception_handler
 from django.http import JsonResponse
 from rest_framework import status
+from utils.globalresponse import globalresponse
 
 def custom_exception_handler(exc, context):
 
@@ -24,7 +25,7 @@ def custom_exception_handler(exc, context):
         err_data = {'MSG_HEADER': 'some custom error messaging'}
         # return JsonResponse(err_data, safe=False, status=503)
         resp = handlers.get(exception_class)(exc, context, response)
-        return JsonResponse(resp['message'], safe=False, status=resp.get('status'))
+        return JsonResponse(resp, safe=False, status=resp.get('status_code'))
     else:
         return response
 
@@ -44,7 +45,7 @@ def _handle_error_exception(exc, context, response):
 def _handle_value_error_exception(exc, context, response):
     response = response if response is not None else {}
     response['message'] = {
-        'message': ''
+        'message': str(exc)
     }
     response['status'] = 503
     # print (exc['designation'])
@@ -52,9 +53,14 @@ def _handle_value_error_exception(exc, context, response):
 
 def _handle_required_field_error_exception(exc, context, response):
     response = response if response is not None else {}
-    response['message'] = {
+    # response['message'] = {
+    #     'message': str(exc.message),
+    #     'field_name': exc.field_name
+    # }
+    # response['status'] = status.HTTP_400_BAD_REQUEST
+    data = {
         'message': str(exc.message),
         'field_name': exc.field_name
     }
-    response['status'] = status.HTTP_400_BAD_REQUEST
+    response = globalresponse(error=data, status_code=400).response_data()
     return response

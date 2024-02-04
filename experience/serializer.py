@@ -23,7 +23,7 @@ class experienceSerializer(serializers.ModelSerializer):
         # return obj.work_start
 
     def validate(self, data):
-        if data.get('work_start') > data.get('work_end') :
+        if data.get('work_start') >= data.get('work_end') :
             # raise serializers.ValidationError('start date mast be less then end date')
             raise RequiredfieldException('start date mast be less then end date', 'work_start')
         return data
