@@ -11,6 +11,7 @@ class experienceSerializer(serializers.ModelSerializer):
         model = experience
         # fields = ('designation','company_name','work_start','work_end','is_continue','what_to_do','start_date')
         exclude = ('id',)
+        # fields = '__all__'
         extra_kwargs = {
                 "designation": {"error_messages": {"required": "designation required"}},
                 "company_name": {"error_messages": {"required": "company name required"}},
