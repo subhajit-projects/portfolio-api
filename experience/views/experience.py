@@ -33,6 +33,8 @@ class experience_api(APIView):
             #     "status": "success",
             #     "resp": "new experience added"
             # }
+            # Save new Experience
+            request_data.save()
             data = {
                 "message": "new experience added"
             }
