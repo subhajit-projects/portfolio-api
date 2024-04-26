@@ -5,3 +5,4 @@ class SiteUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteUser
         exclude = ('id',)
+        # fields = '__all__'
