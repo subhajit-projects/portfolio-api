@@ -8,7 +8,8 @@ def custom_exception_handler(exc, context):
     handlers = {
         'Exception': _handle_error_exception,
         'ValidationError': _handle_value_error_exception,
-        'RequiredfieldException': _handle_required_field_error_exception
+        'RequiredfieldException': _handle_required_field_error_exception,
+        'PasswordException': _handle_password_error_exception
     }
 
     response = exception_handler(exc, context)
@@ -63,4 +64,13 @@ def _handle_required_field_error_exception(exc, context, response):
         'field_name': exc.field_name
     }
     response = globalresponse(error=data, status_code=400).response_data()
+    return response
+
+def _handle_password_error_exception(exc, context, response):
+    response = response if response is not None else {}
+    # print (exc.raw_message)
+    data = {
+        'message': str(exc.message)
+    }
+    response = globalresponse(error=data, status_code=503).response_data()
     return response
