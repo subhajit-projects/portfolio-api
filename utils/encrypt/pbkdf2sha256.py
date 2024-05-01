@@ -1,5 +1,7 @@
 from passlib.hash import pbkdf2_sha256
 
+from utils.exceptions.passwordexception import PasswordException
+
 class pbkdf2sha256:
     def encrypt(self, raw_password):
         encrypted = None
@@ -11,7 +13,11 @@ class pbkdf2sha256:
     
     def verify(self, raw_password, hash_password):
         matched = False
-        if raw_password != None and raw_password != "" and hash_password != None and hash_password != "" :
-            matched = pbkdf2_sha256.verify(raw_password, "$pbkdf2-sha256"+hash_password)
+
+        try:
+            if raw_password != None and raw_password != "" and hash_password != None and hash_password != "" :
+                matched = pbkdf2_sha256.verify(raw_password, "$pbkdf2-sha256"+hash_password)
+        except Exception as e:
+            raise PasswordException("Hash key not match!!", e)
         
         return matched
