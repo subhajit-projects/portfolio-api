@@ -16,4 +16,4 @@ class siteusers(APIView):
         }
         
         return_obj = globalresponse(data=SiteUsersSerializer(get_all_data, many=True).data, status_code=200).response_data()
-        return Response(data=return_object, status=return_object.get("status_code"))
+        return Response(data=return_obj, status=return_obj.get("status_code"))
