@@ -22,6 +22,7 @@ class SiteUser(models.Model):
         verbose_name = 'site user'
 
     def save(self, *args, **kwargs):
+        self.user_name = self.user_name.lower()
         name = self.first_name
         if(self.middle_name != None and self.middle_name != ""):
             name = name+" "+self.middle_name

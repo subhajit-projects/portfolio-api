@@ -16,20 +16,26 @@ class siteusers(APIView):
             "data": SiteUsersSerializer(get_all_data, many=True).data
         }
         
-        return_obj = globalresponse(data=SiteUsersSerializer(get_all_data, many=True).data, status_code=200).response_data()
+        return_obj = globalresponse(data=SiteUsersSerializer(get_all_data, many=True).data, is_success=True, status_code=200).response_data()
         return Response(data=return_obj, status=return_obj.get("status_code"))
     
     def post(self, request):
         resp_obj = {}
-        request_data = SiteUsersSerializer(data=request.data)
+        request_data = SiteUsersSerializerFormValidate(data=request.data)
         if request_data.is_valid(raise_exception=False):
-            pass
+            print("Password")
+            # print (request_data.get("user_name"))
+            request_data.save()
+            resp_obj = {
+                "message": "new user added"
+            }
+            return_obj = globalresponse(data=resp_obj, is_success=True, status_code=201).response_data()
         else:
             default_errors = request_data.errors
             field_names = []
             for field_name, field_errors in default_errors.items():
+                # print ('field_errors: '+str(field_errors))
                 field_names.append(field_name)
                 raise RequiredfieldException(str(field_errors[0]), field_name)
-        
-        return_obj = globalresponse(data=SiteUsersSerializer(resp_obj).data, status_code=200).response_data()
+            
         return Response(data=return_obj, status=return_obj.get("status_code"))
