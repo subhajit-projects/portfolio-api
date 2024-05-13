@@ -8,7 +8,10 @@ def custom_exception_handler(exc, context):
     handlers = {
         'Exception': _handle_error_exception,
         'ValidationError': _handle_value_error_exception,
-        'RequiredfieldException': _handle_required_field_error_exception
+        'RequiredfieldException': _handle_required_field_error_exception,
+        'PasswordException': _handle_password_error_exception,
+        'MethodNotAllowed': _handle_method_not_allow_exception,
+        'FieldvalueException': _handle_fieldvalue_exception
     }
 
     response = exception_handler(exc, context)
@@ -33,6 +36,16 @@ def custom_exception_handler(exc, context):
     #     response.data['status_code'] = response.status_code
 
     # return response
+
+def _handle_method_not_allow_exception(exc, context, response):
+    response = response if response is not None else {}
+    print (exc)
+    print (context)
+    data = {
+        'message': "This method not allow."
+    }
+    response = globalresponse(error=data, status_code=405).response_data()
+    return response
 
 def _handle_error_exception(exc, context, response):
     response = response if response is not None else {}
@@ -63,4 +76,22 @@ def _handle_required_field_error_exception(exc, context, response):
         'field_name': exc.field_name
     }
     response = globalresponse(error=data, status_code=400).response_data()
+    return response
+
+def _handle_password_error_exception(exc, context, response):
+    response = response if response is not None else {}
+    # print (exc.raw_message)
+    data = {
+        'message': str(exc.message)
+    }
+    response = globalresponse(error=data, status_code=503).response_data()
+    return response
+
+def _handle_fieldvalue_exception(exc, context, response):
+    response = response if response is not None else {}
+    data = {
+        'message': str(exc.message),
+        'field_name': exc.field_name
+    }
+    response = globalresponse(error=data, status_code=406).response_data()
     return response
