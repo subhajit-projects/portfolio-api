@@ -72,4 +72,9 @@ class SiteUsersSerializerFormValidate(serializers.ModelSerializer):
         if StringValidation().name_validation(data.get('first_name').lower()) == False :
             # raise serializers.ValidationError('start date mast be less then end date')
             raise FieldvalueException('please enter valid value', 'first_name')
+        if StringValidation().name_validation(data.get('last_name').lower()) == False :
+            raise FieldvalueException('please enter valid value', 'last_name')
+        if data.get('last_name') != None:
+            if StringValidation().name_validation(data.get('last_name').lower()) == False :
+                raise FieldvalueException('please enter valid value', 'last_name')
         return data
