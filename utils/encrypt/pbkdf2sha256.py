@@ -2,7 +2,7 @@ from passlib.hash import pbkdf2_sha256
 
 from utils.exceptions.passwordexception import PasswordException
 
-class pbkdf2sha256:
+class Pbkdf2Sha256:
     def encrypt(self, raw_password):
         encrypted = None
 
