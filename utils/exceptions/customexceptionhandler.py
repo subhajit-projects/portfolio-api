@@ -11,7 +11,8 @@ def custom_exception_handler(exc, context):
         'RequiredfieldException': _handle_required_field_error_exception,
         'PasswordException': _handle_password_error_exception,
         'MethodNotAllowed': _handle_method_not_allow_exception,
-        'FieldvalueException': _handle_fieldvalue_exception
+        'FieldvalueException': _handle_fieldvalue_exception,
+        'LoginException': _handle_login_exception,
     }
 
     response = exception_handler(exc, context)
@@ -94,4 +95,13 @@ def _handle_fieldvalue_exception(exc, context, response):
         'field_name': exc.field_name
     }
     response = globalresponse(error=data, status_code=406).response_data()
+    return response
+
+def _handle_login_exception(exc, context, response):
+    response = response if response is not None else {}
+    data = {
+        'message': str(exc.message),
+        'field_name': exc.field_name
+    }
+    response = globalresponse(error=data, status_code=401).response_data()
     return response
