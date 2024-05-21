@@ -13,6 +13,7 @@ def custom_exception_handler(exc, context):
         'MethodNotAllowed': _handle_method_not_allow_exception,
         'FieldvalueException': _handle_fieldvalue_exception,
         'LoginException': _handle_login_exception,
+        'JwtTokenException': _handle_JwtTokenException,
     }
 
     response = exception_handler(exc, context)
@@ -102,6 +103,14 @@ def _handle_login_exception(exc, context, response):
     data = {
         'message': str(exc.message),
         'field_name': exc.field_name
+    }
+    response = globalresponse(error=data, status_code=401).response_data()
+    return response
+
+def _handle_JwtTokenException(exc, context, response):
+    response = response if response is not None else {}
+    data = {
+        'message': str(exc.message)
     }
     response = globalresponse(error=data, status_code=401).response_data()
     return response
