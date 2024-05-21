@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from utils.encrypt.pbkdf2sha256 import pbkdf2sha256
+from utils.encrypt.pbkdf2sha256 import Pbkdf2Sha256
 
 # Create your models here.
 
@@ -29,7 +29,7 @@ class SiteUser(models.Model):
         name = name+" "+self.last_name
         self.full_name = name
         
-        self.password = pbkdf2sha256().encrypt(self.password)
+        self.password = Pbkdf2Sha256().encrypt(self.password)
 
         super(SiteUser, self).save(*args, **kwargs)
 

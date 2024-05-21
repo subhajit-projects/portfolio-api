@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'projects',
     'blog',
     'site_users',
+    'site_users_auth',
     'email_queue',
     'django_crontab',
 ]
