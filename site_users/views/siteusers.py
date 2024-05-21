@@ -2,7 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .. models import *
 from .. serializer import *
-from utils.encrypt.pbkdf2sha256 import pbkdf2sha256
 from utils.globalresponse import globalresponse
 from utils.exceptions import RequiredfieldException
 
