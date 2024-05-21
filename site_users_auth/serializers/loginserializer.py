@@ -24,6 +24,8 @@ class LoginFormSerializer(serializers.ModelSerializer):
         # print (user.values().first()['password'])
         if Pbkdf2Sha256().verify(data.get('password'), user.values().first()['password']) == False:
             raise LoginException("Password not match.", 'password')
+        # if user.values().first()['is_active'] == False:
+        #     raise LoginException("User inactive. Please contract with admin", 'user_name')
         if(1==1) :
             pass
         else :
