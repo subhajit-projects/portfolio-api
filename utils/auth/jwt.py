@@ -1,5 +1,6 @@
 from django.utils import timezone
 from utils.exceptions.jwttokenexception import *
+from django.conf import settings
 import jwt
 import datetime
 import time
@@ -7,7 +8,7 @@ import time
 class HS256JWT:
     __access_header = {'id': 'django-my-portfolio', 'type': 'ACCESS'}
     __refresh_header = {'id': 'django-my-portfolio', 'type': 'REFRESH'}
-    __secret_key = "aa"
+    __secret_key = settings.JWT_SECRET_KEY
 
     def encode(self, payload={}, algorithm="hs256", type ='access'):
         # token = jwt.encode(payload, "aa", algorithm.upper())
@@ -20,18 +21,20 @@ class HS256JWT:
         # payload['exp'] = str(int(round(datetime.datetime.now(tz=timezone.get_default_timezone()).timestamp())))
         # print (payload)
         if type.upper() == "ACCESS":
-            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=60) # 60*10
+            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=settings.ACCESS_TOKEN_TIME) # 60*10
             payload['exp'] = str(int(round(expire_time.timestamp())))
             token = jwt.encode({"data": payload}, self.__secret_key, algorithm=algorithm.upper(), headers=self.__access_header)
+
         if type.upper() == "REFRESH":
-            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=60) # 60*10
+            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=settings.REFRESH_TOKEN_TIME) # 60*10
             payload['exp'] = str(int(round(expire_time.timestamp())))
             token = jwt.encode({"data": payload}, self.__secret_key, algorithm=algorithm.upper(), headers=self.__refresh_header)
+
         return token
     
     def decode(self, encode_key,  algorithm="hs256"):
         data = jwt.decode(encode_key, self.__secret_key, leeway=0, algorithms=algorithm.upper())
-        # self.verify(data)
+        self.verify(data)
         print (jwt.get_unverified_header(encode_key))
         return data
     
