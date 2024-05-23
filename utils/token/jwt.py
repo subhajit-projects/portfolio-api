@@ -34,13 +34,19 @@ class HS256JWT:
     
     def decode(self, encode_key,  algorithm="hs256"):
         data = jwt.decode(encode_key, self.__secret_key, leeway=0, algorithms=algorithm.upper())
-        self.verify(data)
-        print (jwt.get_unverified_header(encode_key))
+        header = jwt.get_unverified_header(encode_key)
+        self.verify(data, header)
+        print (header)
         return data
     
-    def verify(self, token_data):
+    def verify(self, token_data, token_header):
         # print (time.time())
         current_date_time = datetime.datetime.now(tz=timezone.utc)
         current_timestamp = int(round(current_date_time.timestamp()))
+        msg = "Token Expire."
+        if str(token_header.get('type')).upper() == "REFRESH":
+            msg = "Refresh Token Expire."
+        if str(token_header.get('type')).upper() == "ACCESS":
+            msg = "Access Token Expire."
         if token_data.get('data').get('exp') < str(current_timestamp) :
-            raise JwtTokenException("Token Expire")
+            raise JwtTokenException(msg)
