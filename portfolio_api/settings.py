@@ -178,3 +178,8 @@ CRONJOBS = [
 #     ('*/1 * * * *', 'email_queue.cron.test_cron'),
 #     ('*/1 * * * *', 'email_queue.views.email_send_corn_job', '>> /home/subhajit/Documents/file.log')
 # ]
+
+# JSON WEB TOKEN (JWT)
+ACCESS_TOKEN_TIME = config('JWT_ACCESS_TOKEN_TIME', cast=int) # Time in second. Mean 60*5 = 5 Minutes
+REFRESH_TOKEN_TIME = config('JWT_REFRESH_TOKEN_TIME', cast=int) # Time in second. Mean 60*5 = 5 Minutes
+JWT_SECRET_KEY = config('JWT_SECRET_KEY')

@@ -5,10 +5,11 @@ from .. serializers.loginserializer import *
 from site_users.models import SiteUser
 from site_users.serializer import SiteUsersSerializer
 from utils.globalresponse import globalresponse
-from utils.auth.jwt import HS256JWT
+from utils.token.jwt import HS256JWT
 from utils.exceptions import RequiredfieldException
 from django.utils import timezone
 from utils.datetime.datetimeutils import DateTimeUtils
+from django.conf import settings
 import datetime
 
 # Create your views here.
@@ -20,7 +21,7 @@ class SiteUsersAuth(APIView):
             # "data": SiteUsersSerializer(get_all_data, many=True).data
         }
 
-        request_data = data=request.data
+        request_data =request.data
         check_request_data = LoginFormSerializer(data=request_data)
 
         if check_request_data.is_valid(raise_exception=False):
@@ -28,11 +29,11 @@ class SiteUsersAuth(APIView):
             print (login_user_data.id)
             user = SiteUsersSerializer(login_user_data , many=False).data
             return_object['user'] = user
-            print (HS256JWT().decode("eyJhbGciOiJIUzI1NiIsImlkIjoiZGphbmdvLW15LXBvcnRmb2xpbyIsInR5cCI6IkpXVCIsInR5cGUiOiJBQ0NFU1MifQ.eyJkYXRhIjp7ImlkIjoiNzFiYTY0ZjktNTc0Ny00ZTAxLThhYTUtZGE0YzUyZmMwNWIxIiwiZW1haWwiOiJhYSAxMTExMSIsImV4cCI6IjE3MTYyNTUwMzQifX0.aEYTcVkrR_KImWSsOp1XBbUbrjxon__ejDMjFOlWtCo"))
+            # print (HS256JWT().decode("eyJhbGciOiJIUzI1NiIsImlkIjoiZGphbmdvLW15LXBvcnRmb2xpbyIsInR5cCI6IkpXVCIsInR5cGUiOiJBQ0NFU1MifQ.eyJkYXRhIjp7ImlkIjoiNzFiYTY0ZjktNTc0Ny00ZTAxLThhYTUtZGE0YzUyZmMwNWIxIiwiZW1haWwiOiJhYSAxMTExMSIsImV4cCI6IjE3MTYyNTUwMzQifX0.aEYTcVkrR_KImWSsOp1XBbUbrjxon__ejDMjFOlWtCo"))
             token = {}
             token['access_token'] = HS256JWT().encode({'id': str(login_user_data.id), 'email': login_user_data.full_name}, type="access")
             token['refresh_token'] = HS256JWT().encode({'id': str(login_user_data.id), 'email': login_user_data.full_name}, type="refresh")
-            expire_time = datetime.datetime.now(tz=timezone.get_default_timezone()) + datetime.timedelta(seconds=60)
+            expire_time = datetime.datetime.now(tz=timezone.get_default_timezone()) + datetime.timedelta(seconds=settings.ACCESS_TOKEN_TIME)
             token['expire'] = DateTimeUtils().date_to_str(expire_time, "%Y-%m-%d %H:%M:%S")         
             return_object['token'] = token
             
