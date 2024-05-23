@@ -5,7 +5,7 @@ from .. serializers.loginserializer import *
 from site_users.models import SiteUser
 from site_users.serializer import SiteUsersSerializer
 from utils.globalresponse import globalresponse
-from utils.auth.jwt import HS256JWT
+from utils.token.jwt import HS256JWT
 from utils.exceptions import RequiredfieldException
 from django.utils import timezone
 from utils.datetime.datetimeutils import DateTimeUtils
@@ -20,7 +20,7 @@ class SiteUsersAuth(APIView):
             # "data": SiteUsersSerializer(get_all_data, many=True).data
         }
 
-        request_data = data=request.data
+        request_data =request.data
         check_request_data = LoginFormSerializer(data=request_data)
 
         if check_request_data.is_valid(raise_exception=False):
