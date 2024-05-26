@@ -2,10 +2,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from utils.globalresponse import globalresponse
+from utils.token.jwttokenrequired import JwtTokenRequired
 
 # Create your views here.
 
 class SiteUsersAuthHistory(APIView):
+
+    @JwtTokenRequired(required=True)
     def get(self, request):
         # return_object = {
         #     "status": "success",
