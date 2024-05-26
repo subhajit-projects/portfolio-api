@@ -14,6 +14,7 @@ def custom_exception_handler(exc, context):
         'FieldvalueException': _handle_fieldvalue_exception,
         'LoginException': _handle_login_exception,
         'JwtTokenException': _handle_JwtTokenException,
+        'InvalidSignatureError': __handle_JWTInvalidSignatureErrorException,
     }
 
     response = exception_handler(exc, context)
@@ -55,6 +56,9 @@ def _handle_error_exception(exc, context, response):
         'message': 'Error'
     }
     response['status'] = 503
+    print (exc)
+    print (context)
+    print (response)
     return response
 
 def _handle_value_error_exception(exc, context, response):
@@ -111,6 +115,14 @@ def _handle_JwtTokenException(exc, context, response):
     response = response if response is not None else {}
     data = {
         'message': str(exc.message)
+    }
+    response = globalresponse(error=data, status_code=401).response_data()
+    return response
+
+def __handle_JWTInvalidSignatureErrorException(exc, context, response):
+    response = response if response is not None else {}
+    data = {
+        'message': "Token error."
     }
     response = globalresponse(error=data, status_code=401).response_data()
     return response
