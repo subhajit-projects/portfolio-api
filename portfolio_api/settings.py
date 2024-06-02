@@ -162,6 +162,12 @@ CORS_ORIGIN_WHITELIST = (
 )
 '''
 
+CORS_ALLOW_HEADERS = [
+    "REQUEST-FROM",
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+]
+
 # SMTP MAIL SET UP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
