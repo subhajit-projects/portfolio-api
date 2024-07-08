@@ -19,7 +19,7 @@ class experience_api(APIView):
             else :
                 get_all_data = experience.objects.filter(experience_id=experience_id)
                 if get_all_data.exists() == False:
-                    raise Exception("Experience id not found")
+                    raise ValueError("Experience id not found")
                 else:
                     get_all_data = get_all_data.first()
                     many_data = False
@@ -29,6 +29,8 @@ class experience_api(APIView):
                 "data": experienceSerializer(get_all_data, many=many_data).data
             }
             return Response(data=return_object, status=200)
+        except ValueError as e:
+            raise ValueError(e)
         except Exception as e:
             print (e)
             raise Exception(e)
