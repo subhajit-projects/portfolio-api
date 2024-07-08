@@ -10,16 +10,30 @@ from rest_framework import status
 from utils.exceptions import RequiredfieldException
 
 class experience_api(APIView):
-    def get(self, request):
+    def get(self, request, experience_id=""):
         try:
-            get_all_data = experience.objects.all()
+            get_all_data = None
+            many_data = True
+            if experience_id == "" :
+                get_all_data = experience.objects.all()
+            else :
+                get_all_data = experience.objects.filter(experience_id=experience_id)
+                if get_all_data.exists() == False:
+                    raise ValueError("Experience id not found")
+                else:
+                    get_all_data = get_all_data.first()
+                    many_data = False
+                #ValidationError
             return_object = {
                 "status": "success",
-                "data": experienceSerializer(get_all_data, many=True).data
+                "data": experienceSerializer(get_all_data, many=many_data).data
             }
             return Response(data=return_object, status=200)
+        except ValueError as e:
+            raise ValueError(e)
         except Exception as e:
             print (e)
+            raise Exception(e)
 
     def post(self, request):
         request_data = experienceSerializer(data=request.data)
