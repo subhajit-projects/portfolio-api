@@ -64,3 +64,46 @@ class experience_api(APIView):
                 raise RequiredfieldException(str(field_errors[0]), field_name)
 
         return Response(data=return_object, status=return_object.get("status_code"))
+    
+    def put(self, request, experience_id=""):
+        try:
+            request_data = experienceSerializer(data=request.data)
+            if experience_id == None or experience_id == "" :
+                raise RequiredfieldException("experience id required", "experience_id")
+            else :
+                get_all_data = experience.objects.filter(experience_id=experience_id)
+                if get_all_data.exists() == False:
+                    raise ValueError("experience id not found")
+                else:
+                    if request_data.is_valid(raise_exception=False):
+                        get_all_data.update(
+                            designation = request_data.data['designation'],
+                            company_name = request_data.data['company_name'],
+                            work_start = request_data.data['work_start'],
+                            work_end = request_data.data['work_end'],
+                            is_continue = request_data.data['is_continue'],
+                            what_to_do = request_data.data['what_to_do']
+                        )
+                    else:
+                        default_errors = request_data.errors
+                        field_names = []
+                        for field_name, field_errors in default_errors.items():
+                            field_names.append(field_name)
+                            raise RequiredfieldException(str(field_errors[0]), field_name)
+                #ValidationError
+            data = {
+                "message": "experience updated"
+            }
+            return_object = globalresponse(data=data, is_success=True, status_code=201).response_data()
+
+            return Response(data=return_object, status=return_object.get("status_code"))
+                
+        except RequiredfieldException as e:
+            raise RequiredfieldException(e.message, e.field_name)
+        
+        except ValueError as e:
+            raise ValueError(e)
+
+        except Exception as e:
+            print (e)
+            raise Exception(e)
