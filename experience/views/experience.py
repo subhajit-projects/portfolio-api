@@ -69,11 +69,11 @@ class experience_api(APIView):
         try:
             request_data = experienceSerializer(data=request.data)
             if experience_id == None or experience_id == "" :
-                raise Exception("experience_id required")
+                raise RequiredfieldException("experience id required", "experience_id")
             else :
                 get_all_data = experience.objects.filter(experience_id=experience_id)
                 if get_all_data.exists() == False:
-                    raise Exception("Experience id not found")
+                    raise ValueError("experience id not found")
                 else:
                     if request_data.is_valid(raise_exception=False):
                         get_all_data.update(
@@ -100,6 +100,10 @@ class experience_api(APIView):
                 
         except RequiredfieldException as e:
             raise RequiredfieldException(e.message, e.field_name)
+        
+        except ValueError as e:
+            raise ValueError(e)
+
         except Exception as e:
             print (e)
             raise Exception(e)
