@@ -4,6 +4,7 @@ from django.conf import settings
 import jwt
 import datetime
 import time
+import pytz
 
 class HS256JWT:
     __access_header = {'id': 'django-my-portfolio', 'type': 'ACCESS'}
@@ -21,12 +22,14 @@ class HS256JWT:
         # payload['exp'] = str(int(round(datetime.datetime.now(tz=timezone.get_default_timezone()).timestamp())))
         # print (payload)
         if type.upper() == "ACCESS":
-            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=settings.ACCESS_TOKEN_TIME) # 60*10
+            # timezone.utc
+            expire_time = datetime.datetime.now(tz=pytz.timezone('Utc')) + datetime.timedelta(seconds=settings.ACCESS_TOKEN_TIME) # 60*10
             payload['exp'] = str(int(round(expire_time.timestamp())))
             token = jwt.encode({"data": payload}, self.__secret_key, algorithm=algorithm.upper(), headers=self.__access_header)
 
         if type.upper() == "REFRESH":
-            expire_time = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(seconds=settings.REFRESH_TOKEN_TIME) # 60*10
+            # timezone.utc
+            expire_time = datetime.datetime.now(tz=pytz.timezone('Utc')) + datetime.timedelta(seconds=settings.REFRESH_TOKEN_TIME) # 60*10
             payload['exp'] = str(int(round(expire_time.timestamp())))
             token = jwt.encode({"data": payload}, self.__secret_key, algorithm=algorithm.upper(), headers=self.__refresh_header)
 
