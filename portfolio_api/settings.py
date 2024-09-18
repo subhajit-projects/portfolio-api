@@ -29,6 +29,8 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s for s in v.split(',')])
 
+DB_PROVIDER_NAME = config('DATABASE_PROVIDER_NAME')
+
 
 # Application definition
 
@@ -91,12 +93,27 @@ WSGI_APPLICATION = 'portfolio_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DB_PROVIDER_NAME == 'postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            "OPTIONS": {"options": "-c search_path=portfolio"}, # schema define. Need more schema put with coma(,) without space.
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT'),
+            'USER': config('DB_USER_NAME'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'NAME': config("DB_NAME")          
+        }
     }
-}
+
+else :
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
