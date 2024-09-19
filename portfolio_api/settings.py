@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'contact',
     'education',
     'experience',
+    'skill',
     'projects',
     'blog',
     'site_users',
