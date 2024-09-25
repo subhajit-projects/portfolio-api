@@ -21,3 +21,12 @@ Now project successfully run on port no `8000`
 
 
 Help link for deploy [Youtube Video](https://www.youtube.com/watch?v=FJBTwa0R_5g)
+
+
+### Static file problem while deploy
+1. install whitenoise `pip install whitenoise`
+2. Store whitenoise into requirment.txt file
+3. And run python manage.py collectstatic --noinput
+
+
+Help Link [Link](https://www.w3schools.com/django/django_static_whitenoise.php)
