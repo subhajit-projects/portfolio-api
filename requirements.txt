@@ -14,3 +14,4 @@ pytz==2024.2
 sqlparse==0.5.1
 typing_extensions==4.12.2
 wheel==0.44.0
+whitenoise==6.7.0
