@@ -15,6 +15,9 @@ import datetime
 # Create your views here.
 
 class SiteUsersAuth(APIView):
+
+    allowed_methods = ['get', 'post']
+
     def post(self, request):
         return_object = {
             # "status": "success",
