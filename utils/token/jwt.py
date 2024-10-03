@@ -44,7 +44,7 @@ class HS256JWT:
     
     def verify(self, token_data, token_header):
         # print (time.time())
-        current_date_time = datetime.datetime.now(tz=timezone.utc)
+        current_date_time = datetime.datetime.now(tz=pytz.timezone('Utc'))
         current_timestamp = int(round(current_date_time.timestamp()))
         msg = "Token Expire."
         if str(token_header.get('type')).upper() == "REFRESH":
