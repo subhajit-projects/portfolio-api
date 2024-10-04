@@ -11,3 +11,8 @@ class SiteUserAdmin(admin.ModelAdmin):
     active.boolean = True
 
 admin.site.register(SiteUser, SiteUserAdmin)
+
+
+# hot to change default change function in django admin save button function
+# https://stackoverflow.com/questions/36443245/override-save-method-of-django-admin
+# https://books.agiliq.com/projects/django-admin-cookbook/en/latest/override_save.html

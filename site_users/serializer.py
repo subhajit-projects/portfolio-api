@@ -14,7 +14,7 @@ class SiteUsersSerializer(serializers.ModelSerializer):
         model = SiteUser
         # exclude = ('id','password', 'created_at')
         # fields = '__all__'
-        fields = ('user_name', 'first_name', 'middle_name', 'last_name', 'full_name', 'is_active', 'last_modify')
+        fields = ('user_id', 'user_name', 'first_name', 'middle_name', 'last_name', 'full_name', 'is_active', 'last_modify')
 
         '''extra_kwargs = {
             "user_name": {
@@ -71,6 +71,27 @@ class SiteUsersSerializerFormValidate(serializers.ModelSerializer):
         # Name check
         if StringValidation().name_validation(data.get('first_name').lower()) == False :
             # raise serializers.ValidationError('start date mast be less then end date')
+            raise FieldvalueException('please enter valid value', 'first_name')
+        if StringValidation().name_validation(data.get('last_name').lower()) == False :
+            raise FieldvalueException('please enter valid value', 'last_name')
+        if data.get('last_name') != None:
+            if StringValidation().name_validation(data.get('last_name').lower()) == False :
+                raise FieldvalueException('please enter valid value', 'last_name')
+        return data
+    
+class SiteUsersSerializerFormValidateForEdit(serializers.ModelSerializer):
+    class Meta:
+        model = SiteUser
+        fields = ('first_name', 'middle_name', 'last_name')
+
+        extra_kwargs = {
+            "first_name": {"error_messages": {"required": "first name required", 'blank': "first name sould not blank"}},
+            "last_name": {"error_messages": {"required": "last name required", 'blank': "last name sould not blank"}},
+        }
+    
+    def validate(self, data):        
+        # Name check
+        if StringValidation().name_validation(data.get('first_name').lower()) == False :
             raise FieldvalueException('please enter valid value', 'first_name')
         if StringValidation().name_validation(data.get('last_name').lower()) == False :
             raise FieldvalueException('please enter valid value', 'last_name')

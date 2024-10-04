@@ -38,3 +38,30 @@ class siteusers(APIView):
                 raise RequiredfieldException(str(field_errors[0]), field_name)
             
         return Response(data=return_obj, status=return_obj.get("status_code"))
+    
+    def put(self, request, user_id):
+        resp_obj = {}
+        request_data = SiteUsersSerializerFormValidateForEdit(data=request.data)
+        if request_data.is_valid(raise_exception=False):
+            get_data = SiteUser.objects.filter(user_id=user_id)
+            if get_data.exists() == False:
+                raise ValueError("user not found")
+            
+            get_data = get_data.get()
+            get_data.first_name = request.data.get('first_name', get_data.first_name)
+            get_data.middle_name = request.data.get('middle_name', get_data.middle_name)
+            get_data.last_name = request.data.get('last_name', get_data.last_name)
+            get_data.save()
+            resp_obj = {
+                "message": "user data uptodate"
+            }
+            return_obj = globalresponse(data=resp_obj, is_success=True, status_code=201).response_data()
+        else:
+            default_errors = request_data.errors
+            field_names = []
+            for field_name, field_errors in default_errors.items():
+                # print ('field_errors: '+str(field_errors))
+                field_names.append(field_name)
+                raise RequiredfieldException(str(field_errors[0]), field_name)
+            
+        return Response(data=return_obj, status=return_obj.get("status_code"))

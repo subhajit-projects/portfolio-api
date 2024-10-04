@@ -2,11 +2,13 @@ import uuid
 
 from django.db import models
 from utils.encrypt.pbkdf2sha256 import Pbkdf2Sha256
+# from django.db.models import Max
 
 # Create your models here.
 
 class SiteUser(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    user_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     user_name = models.CharField(max_length=255, null=False, blank=False, unique=True)
     password = models.CharField(max_length=255, null=False, blank=False)
     first_name = models.CharField(max_length=70, null=False, blank=False)
@@ -21,6 +23,14 @@ class SiteUser(models.Model):
         db_table = 'site_user'
         verbose_name = 'site user'
 
+    def unique_user_id_generator(self):
+        find_max_count = SiteUser.objects.all()
+        # max = find_max_id.aggregate(Max('id'))
+        # max_id_increment = 'project-'+str(int(max['id__max'] if max['id__max'] != None else 0)+1).zfill(5)
+        max = find_max_count.count()
+        id_increment = 'user-'+str(int(max if max != None else 0)+1).zfill(5)
+        return id_increment
+
     def save(self, *args, **kwargs):
         self.user_name = self.user_name.lower()
         name = self.first_name
@@ -28,8 +38,10 @@ class SiteUser(models.Model):
             name = name+" "+self.middle_name
         name = name+" "+self.last_name
         self.full_name = name
-        
-        self.password = Pbkdf2Sha256().encrypt(self.password)
+
+        if self.user_id == "" or self.user_id == None:
+            self.user_id = self.unique_user_id_generator()
+            self.password = Pbkdf2Sha256().encrypt(self.password)
 
         super(SiteUser, self).save(*args, **kwargs)
 
