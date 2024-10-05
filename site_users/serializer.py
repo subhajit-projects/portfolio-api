@@ -79,6 +79,9 @@ class SiteUsersSerializerFormValidate(serializers.ModelSerializer):
                 raise FieldvalueException('please enter valid value', 'last_name')
         return data
     
+    def create(self):
+        SiteUser().create(self.data)
+    
 class SiteUsersSerializerFormValidateForEdit(serializers.ModelSerializer):
     class Meta:
         model = SiteUser
