@@ -41,9 +41,38 @@ class SiteUser(models.Model):
 
         if self.user_id == "" or self.user_id == None:
             self.user_id = self.unique_user_id_generator()
-            self.password = Pbkdf2Sha256().encrypt(self.password)
+            # self.password = Pbkdf2Sha256().encrypt(self.password)
 
         super(SiteUser, self).save(*args, **kwargs)
+
+    @classmethod
+    def create(self, *args, **kwargs):
+
+        # if self.user_id == "" or self.user_id == None:
+        #     self.user_id = self.unique_user_id_generator()
+        #     self.password = Pbkdf2Sha256().encrypt(self.password)
+        # print (request_data['first_name'])
+
+        # SiteUser().save(request_data)
+        # args = args.get('password')
+        # args[0]['password'] = 0000
+        # print(args[0].password)
+        # print (args[0].get('password'))
+        # print(kwargs)
+        raw_data = args[0]
+        store_data = self.objects.create(
+            user_name=raw_data.get('user_name'),
+            password=self.password_encrypt(raw_data.get('password')),
+            first_name=raw_data.get('first_name'),
+            middle_name=raw_data.get('middle_name'),
+            last_name=raw_data.get('last_name'),
+            is_active=raw_data.get('is_active')
+        )
+        store_data.save()
+
+    @classmethod
+    def password_encrypt(self, raw_password):
+        return Pbkdf2Sha256().encrypt(raw_password)
 
     def __str__(self):
         show_user = str(self.user_name)
