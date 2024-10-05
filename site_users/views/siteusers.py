@@ -22,9 +22,11 @@ class siteusers(APIView):
         resp_obj = {}
         request_data = SiteUsersSerializerFormValidate(data=request.data)
         if request_data.is_valid(raise_exception=False):
-            print("Password")
+            # print("Password")
             # print (request_data.get("user_name"))
-            request_data.save()
+            # request_data.save()
+            request_data.create()
+            # SiteUser().create(request_data)
             resp_obj = {
                 "message": "new user added"
             }
@@ -64,4 +66,20 @@ class siteusers(APIView):
                 field_names.append(field_name)
                 raise RequiredfieldException(str(field_errors[0]), field_name)
             
+        return Response(data=return_obj, status=return_obj.get("status_code"))
+    
+    def patch(self, request, user_id=None):
+        data = request.data
+        if data.get('password') == None:
+            raise RequiredfieldException("password required", "password")
+        get_data = SiteUser.objects.filter(user_id=user_id)
+        if get_data.exists() == False:
+            raise ValueError("user not found")
+        get_data = get_data.get()
+        get_data.password = get_data.password_encrypt(request.data.get('password'))
+        get_data.save()
+        resp_obj = {
+                "message": "password update successfull"
+            }
+        return_obj = globalresponse(data=resp_obj, is_success=True, status_code=200).response_data()
         return Response(data=return_obj, status=return_obj.get("status_code"))
