@@ -71,8 +71,12 @@ class SiteUser(models.Model):
         store_data.save()
 
     @classmethod
-    def password_encrypt(self, raw_password):
+    def password_encrypt(cls, raw_password):
         return Pbkdf2Sha256().encrypt(raw_password)
+    
+    @classmethod
+    def password_verify(cls, raw_password, store_password):
+        return Pbkdf2Sha256().verify(raw_password, store_password)
 
     def __str__(self):
         show_user = str(self.user_name)
