@@ -66,7 +66,7 @@ class SiteUser(models.Model):
             first_name=raw_data.get('first_name'),
             middle_name=raw_data.get('middle_name'),
             last_name=raw_data.get('last_name'),
-            is_active=raw_data.get('is_active')
+            # is_active=raw_data.get('is_active')
         )
         store_data.save()
 
