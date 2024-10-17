@@ -6,17 +6,27 @@ from utils.globalresponse import globalresponse
 from utils.exceptions import RequiredfieldException
 
 class siteusers(APIView):
-    def get(self, request):
-        get_all_data = SiteUser.objects.all()
+    def get(self, request, user_id=""):
+        get_all_data = None
+        many_data = True
+        if user_id != "" :
+            get_all_data = SiteUser.objects.filter(user_id=user_id)
+            many_data = False
+            if get_all_data.exists() == False:
+                raise ValueError("user not found")
+            get_all_data = get_all_data.first()
+        else :
+            get_all_data = SiteUser.objects.all()
         # for a in get_all_data:
             # print (a.password, pbkdf2sha256().verify("abcd", a.password))
         return_object = {
             "status": "success",
-            "data": SiteUsersSerializer(get_all_data, many=True).data
+            "data": SiteUsersSerializer(get_all_data, many=many_data).data
         }
         
-        return_obj = globalresponse(data=SiteUsersSerializer(get_all_data, many=True).data, is_success=True, status_code=200).response_data()
-        return Response(data=return_obj, status=return_obj.get("status_code"))
+        # return_obj = globalresponse(data=SiteUsersSerializer(get_all_data, many=many_data).data, is_success=True, status_code=200).response_data()
+        # return Response(data=return_obj, status=return_obj.get("status_code"))
+        return Response(data=return_object, status=return_object.get("status_code"))
     
     def post(self, request):
         resp_obj = {}
