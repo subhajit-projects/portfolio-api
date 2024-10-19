@@ -2,6 +2,8 @@ from django.conf import settings
 from utils.exceptions.urlmiddlewareexception import UrlMiddlewareException
 from django.http import HttpResponseServerError, JsonResponse
 from utils.globalresponse import globalresponse
+from utils.token.jwt import HS256JWT
+from utils.exceptions.jwttokenexception import *
 
 class UrlMiddleware(object):
     
@@ -9,7 +11,7 @@ class UrlMiddleware(object):
         """
         One-time configuration and initialisation.
         """
-        print ("init Middleware")
+        # print ("init Middleware")
         self.get_response = get_response
     
     def __call__(self, request):
@@ -35,13 +37,25 @@ class UrlMiddleware(object):
                     # Check agent. Means the request came from postman or browser
                     raise UrlMiddlewareException("can't accept your request")
                     # response = HttpResponseServerError("Oops! Something went wrong.")
+
                 if request.META.get('HTTP_AUTHORIZATION') == None or request.META.get('HTTP_AUTHORIZATION') == "" :
                     # Check bearer token is given or not
-                    if str(request.get_full_path()).split("/")[-2] != "auth":
+                    if str(request.get_full_path()).split("/")[-2] != "auth" or str(request.get_full_path()).split("/")[-2] != "get-token":
                         # check url is not for login
                         raise UrlMiddlewareException("token not provided")
+                    
+                if HS256JWT().get_header_data(request=request).get('type').upper() == "GET_ACCESS_ONLY" and request.META.get('REQUEST_METHOD').upper() != "GET":
+                    raise UrlMiddlewareException("only get access only access for get request")
+            
 
         except UrlMiddlewareException as e:
+            data = {
+                'message': str(e.message)
+            }
+            resp = globalresponse(error=data, status_code=406).response_data()
+            response = JsonResponse(resp, safe=False, status=resp.get('status_code'))
+
+        except JwtTokenException as e:
             data = {
                 'message': str(e.message)
             }
