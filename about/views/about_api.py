@@ -11,7 +11,7 @@ from utils.exceptions import RequiredfieldException
 
 from utils.token.jwttokenrequired import JwtTokenRequired
 from utils.token.jwt import HS256JWT
-from site_users.models import SiteUser
+from site_users_auth.common.checksiteuser import CheckSiteUser
 
 class about_api(APIView):
 
@@ -49,6 +49,7 @@ class about_api(APIView):
             print (e)
             raise Exception(e)
         
+    @JwtTokenRequired(required=True)
     def post(self, request):
         request_data = aboutSerializer(data=request.data)
         return_object = {}
@@ -56,6 +57,7 @@ class about_api(APIView):
 
         # if request_data.is_valid(raise_exception=True):
         if request_data.is_valid(raise_exception=False):
+            request_data.validated_data['user_id'] = CheckSiteUser.getUserDetailsFromToken(request=request)
             request_data.save()
             data = {
                 "message": "new about added"
@@ -75,8 +77,8 @@ class about_api(APIView):
         try:
             # user_id
             print (HS256JWT().get_body_data(request=request).get('data').get('id'))
-            get_user_id = SiteUser.objects.filter(id=HS256JWT().get_body_data(request=request).get('data').get('id'))
-            print(get_user_id.get())
+            # get_user_id = SiteUser.objects.filter(id=HS256JWT().get_body_data(request=request).get('data').get('id'))
+            # print(get_user_id.get())
             request_data = aboutSerializer(data=request.data)
             if about_id == None or about_id == "" :
                 raise RequiredfieldException("about id required", "about_id")
@@ -89,7 +91,7 @@ class about_api(APIView):
                         get_all_data.update(
                             about_content = request_data.data['about_content'],
                             is_active = request_data.data['is_active'],
-                            user_id = get_user_id.get()
+                            user_id = CheckSiteUser.getUserDetailsFromToken(request=request)
                         )
                     else:
                         default_errors = request_data.errors
