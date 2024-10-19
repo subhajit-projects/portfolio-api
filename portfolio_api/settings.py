@@ -66,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'utils.middleware.UrlMiddleware.UrlMiddleware',
 ]
 
 ROOT_URLCONF = 'portfolio_api.urls'
