@@ -12,12 +12,17 @@ from utils.exceptions import RequiredfieldException
 class about_api(APIView):
     def get(self, request, about_id=""):
         try:
+            # absolute_url = request.META['HTTP_REFERER']
+            absolute_url = str(request.META.get('HTTP_REFERER'))
+            # print (" absolute_url : "+absolute_url)
+            # print (request)
+            # print(request.headers['Origin'])
             get_all_data = None
             many_data = True
             if about_id == "" :
                 get_all_data = About.objects.all()
-                for a in get_all_data:
-                    print ("Print ", a.about_content)
+                # for a in get_all_data:
+                #     print ("Print ", a.about_content)
             else :
                 get_all_data = About.objects.filter(about_id=about_id)
                 if get_all_data.exists() == False:
