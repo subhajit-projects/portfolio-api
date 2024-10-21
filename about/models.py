@@ -1,4 +1,5 @@
 from django.db import models
+from site_users.models import SiteUser
 from django.db.models import Max
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -8,6 +9,7 @@ class About(models.Model):
     about_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     about_content = models.CharField(max_length=300, null=False, blank=False)
     is_active = models.BooleanField(default=True)
+    user_id = models.ForeignKey(SiteUser, null=True, on_delete=models.RESTRICT)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
