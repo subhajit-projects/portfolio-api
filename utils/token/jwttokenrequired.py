@@ -36,18 +36,22 @@ from utils.token.jwt import HS256JWT
 def JwtTokenRequired(required=True):
     def decorator(func):
         def wrapper(self, request, *args, **kwargs):
-            if 'HTTP_AUTHORIZATION' in request.META and request.META['HTTP_AUTHORIZATION'] != None and 'Bearer ' in request.META['HTTP_AUTHORIZATION']:
-                raw_token = request.META['HTTP_AUTHORIZATION'].replace('Bearer ', '')
-                token_body = HS256JWT().decode(encode_key=raw_token)
-                # print (request.data)
-                return func(self, request, *args, **kwargs)
-            else :
-                raise JwtTokenException('Token required.')
+            # if 'HTTP_AUTHORIZATION' in request.META and request.META['HTTP_AUTHORIZATION'] != None and 'Bearer ' in request.META['HTTP_AUTHORIZATION']:
+            #     raw_token = request.META['HTTP_AUTHORIZATION'].replace('Bearer ', '')
+            #     token_body = HS256JWT().decode(encode_key=raw_token)
+            #     # print (request.data)
+            #     return func(self, request, *args, **kwargs)
+            # else :
+            #     raise JwtTokenException('Token required.')
+
             # ip = request.META.get('REMOTE_ADDR', '0.0.0.0')
             # if ip in WHITE_LIST:
             #     return func(request, *args, **kwargs)
             # else:
             #     return HttpResponseForbidden()
+
+            HS256JWT().get_body_data(request)
+            return func(self, request, *args, **kwargs)
             
         return wrapper
     return decorator
