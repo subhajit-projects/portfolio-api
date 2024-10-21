@@ -186,10 +186,15 @@ CORS_ORIGIN_WHITELIST = (
 '''
 
 CORS_ALLOW_HEADERS = [
-    "REQUEST-FROM",
     "Access-Control-Allow-Headers",
-    "Content-Type"
+    "REQUEST-FROM",
+    "Content-Type",
+    "Authorization"
 ]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
 
 # SMTP MAIL SET UP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
