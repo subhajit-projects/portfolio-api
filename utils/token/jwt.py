@@ -43,12 +43,20 @@ class HS256JWT:
         return token
     
     def decode(self, encode_key,  algorithm="hs256"):
-        data = jwt.decode(encode_key, self.__secret_key, leeway=0, algorithms=algorithm.upper())
-        header = jwt.get_unverified_header(encode_key)
-        self.verify(data, header)
-        # print (header)
-        # print (data)
-        return data
+        try:
+            data = jwt.decode(encode_key, self.__secret_key, leeway=0, algorithms=algorithm.upper())
+            header = jwt.get_unverified_header(encode_key)
+            self.verify(data, header)
+            # print (header)
+            # print (data)
+            return data
+        
+        except JwtTokenException as e:
+            raise JwtTokenException(e.message)
+        
+        except Exception as e:
+            print ("Token error while decode: ",e)
+            raise JwtTokenException("Token error.")
     
     def verify(self, token_data, token_header):
         # print (time.time())

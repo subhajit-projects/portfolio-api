@@ -19,17 +19,18 @@ class UrlMiddleware(object):
         Code to be executed for each request before the view (and later middleware) are called.
         """
         response = self.get_response(request)
-        # print ("call Middleware")
-        # print (request.META.get('HTTP_REFERER'))
-        # print (request.META.get('HTTP_ACCEPT'))
-        # print (request.META.get('HTTP_HOST'))
-        # print (request.META.get('HTTP_USER_AGENT'))
-        # print (request.META.get('REMOTE_ADDR'))
-        # print (request.META.get('REMOTE_HOST'))
-        # print (request.META.get('REQUEST_METHOD'))
-        # print (request.META.get('SERVER_PORT'))
-        # print (request.META.get('REMOTE_USER'))
-        # print (request.META.get('QUERY_STRING'))
+        print ("***************** call Middleware ***********************")
+        print ('HTTP_REFERER: '+ str(request.META.get('HTTP_REFERER')))
+        print ('HTTP_ACCEPT: '+ str(request.META.get('HTTP_ACCEPT')))
+        print ('HTTP_HOST: '+ str(request.META.get('HTTP_HOST')))
+        print ('HTTP_USER_AGENT: '+ str(request.META.get('HTTP_USER_AGENT')))
+        print ('REMOTE_ADDR: '+ str(request.META.get('REMOTE_ADDR')))
+        print ('REMOTE_HOST: '+ str(request.META.get('REMOTE_HOST')))
+        print ('REQUEST_METHOD: '+ str(request.META.get('REQUEST_METHOD')))
+        print ('SERVER_PORT: '+ str(request.META.get('SERVER_PORT')))
+        print ('REMOTE_USER: '+ str(request.META.get('REMOTE_USER')))
+        print ('QUERY_STRING: '+ str(request.META.get('QUERY_STRING')))
+        print ('Content-Type: '+ str(request.META.get('Content-Type')))
 
         try:
             if settings.DEBUG == False:
@@ -38,14 +39,24 @@ class UrlMiddleware(object):
                     raise UrlMiddlewareException("can't accept your request")
                     # response = HttpResponseServerError("Oops! Something went wrong.")
 
-                if request.META.get('HTTP_AUTHORIZATION') == None or request.META.get('HTTP_AUTHORIZATION') == "" :
-                    # Check bearer token is given or not
-                    if str(request.get_full_path()).split("/")[-2] != "auth" or str(request.get_full_path()).split("/")[-2] != "get-token":
-                        # check url is not for login
-                        raise UrlMiddlewareException("token not provided")
-                    
-                if HS256JWT().get_header_data(request=request).get('type').upper() == "GET_ACCESS_ONLY" and request.META.get('REQUEST_METHOD').upper() != "GET":
-                    raise UrlMiddlewareException("only get access only access for get request")
+                # Modify logic bellow
+                # if request.META.get('HTTP_AUTHORIZATION') == None or request.META.get('HTTP_AUTHORIZATION') == "" :
+                #     # Check bearer token is given or not
+                #     print (request.get_full_path().split("/")[-2])
+                #     if str(request.get_full_path()).split("/")[-2] != "auth" and str(request.get_full_path()).split("/")[-2] != "get-token" and "text/html" not in str(request.META.get('HTTP_ACCEPT')):
+                #         # check url is not for login and not for generic access token and not from browser
+                #         raise UrlMiddlewareException("token not provided")
+                # else :
+                #     if HS256JWT().get_header_data(request=request).get('type').upper() == "GET_ACCESS_ONLY" and request.META.get('REQUEST_METHOD').upper() != "GET":
+                #         raise UrlMiddlewareException("only get access only access for get request")
+
+                #First check is authorization is active
+                if request.META.get('HTTP_AUTHORIZATION') != None and request.META.get('HTTP_AUTHORIZATION') != "" :
+                    # Check request not came from auth, get-token or not accept type text/html
+                    if str(request.get_full_path()).split("/")[-2] != "auth" and str(request.get_full_path()).split("/")[-2] != "get-token" and str(request.get_full_path()).split("/")[-2] != "refresh" and "text/html" not in str(request.META.get('HTTP_ACCEPT')):
+                        # Check token type is GET_ACCESS_ONLY or ACCESS only
+                        if HS256JWT().get_header_data(request=request).get('type').upper() == "GET_ACCESS_ONLY" and request.META.get('REQUEST_METHOD').upper() != "GET":
+                            raise UrlMiddlewareException("only get access only access for get request")
             
 
         except UrlMiddlewareException as e:
@@ -63,6 +74,7 @@ class UrlMiddleware(object):
             response = JsonResponse(resp, safe=False, status=resp.get('status_code'))
 
         except Exception as e:
+            print (e)
             response = HttpResponseServerError(e.message)       
         return response
     
