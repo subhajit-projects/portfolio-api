@@ -67,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'utils.middleware.UrlMiddleware.UrlMiddleware',
 ]
 
 ROOT_URLCONF = 'portfolio_api.urls'
@@ -186,10 +187,15 @@ CORS_ORIGIN_WHITELIST = (
 '''
 
 CORS_ALLOW_HEADERS = [
-    "REQUEST-FROM",
     "Access-Control-Allow-Headers",
-    "Content-Type"
+    "REQUEST-FROM",
+    "Content-Type",
+    "Authorization"
 ]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
 
 # SMTP MAIL SET UP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -211,4 +217,5 @@ CRONJOBS = [
 # JSON WEB TOKEN (JWT)
 ACCESS_TOKEN_TIME = config('JWT_ACCESS_TOKEN_TIME', cast=int) # Time in second. Mean 60*5 = 5 Minutes
 REFRESH_TOKEN_TIME = config('JWT_REFRESH_TOKEN_TIME', cast=int) # Time in second. Mean 60*5 = 5 Minutes
+GET_ACCESS_TOKEN_TIME = config('JWT_GET_ACCESS_TOKEN_TIME', cast=int)
 JWT_SECRET_KEY = config('JWT_SECRET_KEY')
